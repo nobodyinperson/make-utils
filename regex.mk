@@ -84,3 +84,34 @@ _REGEX_NAMES = $$(shell $$(call apply_perl_regex,$(2),$$(_NAME_REGEX),$$(_PRINT_
 $$(foreach KEY,$$(_REGEX_NAMES),$$(eval $$(KEY) = $$(shell $$(call apply_perl_regex,$(1),$(2),$$$$+{$$(KEY)}))))
 endef
 
+# :code:`scan_file_until`
+# +++++++++++++++++++++++
+#
+# .. code:: makefile
+# 	
+# 	SHELLCODE =      $(call scan_file_until,FILE,CONDITION)
+# 	RESULT = $(shell $(call scan_file_until,FILE,CONDITION))
+# 
+# FILE - path
+# 	the file to scan
+# CONDITION - Perl code
+# 	the condition to search for. This Perl code will be evaluated for each line
+# 	until it returns something true. Common use cases of CONDITION are regex
+# 	operations like :perl:`m/.../g` or :perl:`s/.../.../g`.
+# 
+# Function to evaluate CONDITION on the lines of FILE until CONDITION is true.
+# Then :perl:`print` and stop scanning.
+# This function is especially useful to extract a piece of information from a
+# file.
+# 
+# .. code:: makefile
+# 
+# 	# Extract the python package version from the __init__.py file
+# 	REGEX = s/^.*__version__\s*=\s*"(\d+\.\d+.\d+)".*$$/$$1/g
+# 	VERSION = $(shell $(call scan_file_until,__init__.py,$(REGEX)))
+# 	$(info $(VERSION))
+# 	# example output: 2.4.3
+# 
+define scan_file_until
+perl -ne 'if($(2)){print;exit}' < $(1)
+endef

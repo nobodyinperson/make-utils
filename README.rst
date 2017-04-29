@@ -97,3 +97,29 @@ efficient.
 	$(info Found a range $(range) that goes from $(start) to $(end))
 	# Found a range 20070101_to_20101231 that goes from 20070101 to 20101231
 
+:code:`scan_file_until`
++++++++++++++++++++++++
+.. code:: makefile
+
+	$(shell $(call scan_file_until,FILE,CONDITION))
+
+FILE - path
+	the file to scan
+CONDITION - Perl code
+	the condition to search for. This Perl code will be evaluated for each line
+	until it returns something true. Common use cases of CONDITION are regex
+	operations like :perl:`m/.../g` or :perl:`s/.../.../g`.
+
+Function to evaluate CONDITION on the lines of FILE until CONDITION is true.
+Then :perl:`print` and stop scanning.
+This function is especially useful to extract a piece of information from a
+file.
+
+.. code:: makefile
+
+	# Extract the python package version from the __init__.py file
+	REGEX = s/^.*__version__\s*=\s*"(\d+\.\d+.\d+)".*$$/$$1/g
+	VERSION = $(shell $(call scan_file_until,__init__.py,$(REGEX)))
+	$(info $(VERSION))
+	# example output: 2.4.3
+
