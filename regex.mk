@@ -5,10 +5,6 @@
 # 	:language: perl
 # 
 
-# Documentation
-# =============
-# 
-
 # :code:`apply_perl_regex`
 # ++++++++++++++++++++++++
 # 

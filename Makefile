@@ -64,6 +64,12 @@ $(eval $(call assert,$(RESULT),assert)) # first function defined in this file is
 # no function defined in the README base file
 $(eval $(call assert,$(shell $(call scan_file_until,$(README_BASE),$(COND))),))
 
+### download_url_to_file ###
+TMPFILE = google.html
+$(shell $(call download_url_to_file,google.com,$(TMPFILE))) # download google
+$(eval $(call assert,$(shell /bin/sh -c 'file $(TMPFILE) | grep -iq "html";echo $$?'),0))
+$(shell rm -rf $(TMPFILE))
+
 ###############
 ### targets ###
 ###############
